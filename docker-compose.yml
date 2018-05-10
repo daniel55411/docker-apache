@@ -9,6 +9,8 @@ services:
         networks:
             - front
             - backend
+        ports:
+          - "80:80"
  
     apache:
         build: ./docker/apache
@@ -34,8 +36,8 @@ services:
         image: phpmyadmin/phpmyadmin:latest
         environment:
             - PMA_HOST=db
-            - PMA_USER=local
-            - PMA_PASSWORD=local
+            - PMA_USER=root
+            - PMA_PASSWORD=root
         volumes:
             - /sessions
         networks:
