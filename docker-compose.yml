@@ -31,6 +31,9 @@ services:
                MYSQL_PASSWORD: local
         networks:
             - backend
+            - front
+        ports:
+            - "3306:3306"
  
     phpmyadmin:
         image: phpmyadmin/phpmyadmin:latest
