@@ -1,53 +1,38 @@
 version: "3"
- 
+
 services:
- 
     nginx:
-        image: nginx
-        volumes:
-            - ./docker/nginx/:/etc/nginx/conf.d/
-        networks:
-            - front
-            - backend
-        ports:
-          - "80:80"
- 
-    apache:
-        build: ./docker/apache
-        volumes:
-            - ./:/var/www/
-            - ./docker/apache/php.ini:/usr/local/etc/php/php.ini
-        networks:
-            - backend
- 
+      image: nginx
+      volumes:
+        - ./docker/nginx/:/etc/nginx/conf.d/
+        - ./html:/html
+      ports:
+        - "80:80"
+      depends_on:
+        - phpmyadmin
+
+    php:
+      image: php:7-fpm
+      volumes:
+        - ./html:/html
+
     db:
-        image: "mysql:5.6"
-        volumes:
-            - ./docker/db:/var/lib/mysql
-        environment:
-               MYSQL_ROOT_PASSWORD: root
-               MYSQL_DATABASE: local
-               MYSQL_USER: local
-               MYSQL_PASSWORD: local
-        networks:
-            - backend
-            - front
-        ports:
-            - "3306:3306"
- 
+      image: mariadb
+      volumes:
+        - ./docker/db:/var/lib/mysql
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=local
+        - MYSQL_USER=local
+        - MYSQL_PASSWORD=local
+
     phpmyadmin:
-        image: phpmyadmin/phpmyadmin:latest
-        environment:
-            - PMA_HOST=db
-            - PMA_USER=root
-            - PMA_PASSWORD=root
-        volumes:
-            - /sessions
-        networks:
-            - backend
- 
-networks:
-    front:
-        external:
-            name: front
-    backend:
+      image: phpmyadmin/phpmyadmin
+      environment:
+        - PMA_HOST=db
+        - PMA_USER=local
+        - PMA_PASSWORD=local
+      volumes:
+        - /sessions
+      depends_on:
+        - db
