@@ -2,12 +2,14 @@ version: "3"
 
 services:
     nginx:
-      image: nginx:latest
+      image: nginx
       volumes:
         - ./docker/nginx/:/etc/nginx/conf.d/
         - ./html:/html
       ports:
         - "80:80"
+      depends_on:
+        - phpmyadmin
 
     php:
       image: php:7-fpm
@@ -15,7 +17,7 @@ services:
         - ./html:/html
 
     db:
-      image: mysql:latest
+      image: mariadb
       volumes:
         - ./docker/db:/var/lib/mysql
       environment:
@@ -23,14 +25,14 @@ services:
         - MYSQL_DATABASE=local
         - MYSQL_USER=local
         - MYSQL_PASSWORD=local
-      ports:
-        - "3306:3306"
 
     phpmyadmin:
-      image: phpmyadmin/phpmyadmin:latest
+      image: phpmyadmin/phpmyadmin
       environment:
         - PMA_HOST=db
         - PMA_USER=local
         - PMA_PASSWORD=local
       volumes:
         - /sessions
+      depends_on:
+        - db
