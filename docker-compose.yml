@@ -12,9 +12,10 @@ services:
         - phpmyadmin
 
     php:
-      image: php:7-fpm
+      build: ./docker/php
       volumes:
         - ./html:/html
+        - ./docker/apache/php.ini:/usr/local/etc/php/php.ini
 
     db:
       image: mariadb
